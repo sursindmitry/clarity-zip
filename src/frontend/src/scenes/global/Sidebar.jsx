@@ -20,6 +20,7 @@ import {Box, IconButton, Typography, useTheme} from "@mui/material";
 import 'react-pro-sidebar/dist/css/styles.css';
 import {Link} from "react-router-dom";
 
+
 const Item = ({title, to, icon, selected, setSelected}) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -104,8 +105,19 @@ const Sidebar = () => {
 
                             <Box textAlign="center">
                                 <Typography variant="h2" color={colors.grey[100]} fontWeight="bold"
-                                            sx={{margin: "10px 0 0 0"}}>Дмитрий Сурсин </Typography>
-                                <Typography variant="h5" color={colors.greenAccent[500]}>Профиль</Typography>
+                                            sx={{margin: "10px 0 0 0"}}>Вы не вошли</Typography>
+                                <Typography
+                                    variant="h5" 
+                                    style={{cursor:"pointer"}} 
+                                    color={colors.greenAccent[500]}
+                                >
+                                    <Item
+                                        title="Войти"
+                                        to="/login"
+                                        selected={selected}
+                                        setSelected={setSelected}
+                                    />
+                                </Typography>
                             </Box>
                         </Box>
                     )}

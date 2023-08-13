@@ -15,6 +15,7 @@ import Geography from "./scenes/geography"
 import Calendar from "./scenes/calendar"
 import {Routes, Route} from "react-router-dom";
 import Photo from "./scenes/compressed/photo"
+import Login from "./scenes/login";
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -38,6 +39,7 @@ function App() {
                             <Route path="/faq" element={<FAQ/>}/>
                             <Route path="/geography" element={<Geography/>}/>
                             <Route path="/calendar" element={<Calendar/>}/>
+                            <Route path="/login" element={<Login/>}/>
                         </Routes>
                     </main>
                 </div>
