@@ -1,6 +1,6 @@
 package com.grodastr.clarityzip;
 
-import com.grodastr.clarityzip.security.models.ApplicationUser;
+import com.grodastr.clarityzip.security.models.User;
 import com.grodastr.clarityzip.security.models.Role;
 import com.grodastr.clarityzip.security.repository.RoleRepository;
 import com.grodastr.clarityzip.security.repository.UserRepository;
@@ -19,7 +19,6 @@ public class ClarityZipApplication {
     public static void main(String[] args) {
         SpringApplication.run(ClarityZipApplication.class, args);
     }
-
     @Bean
     CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode){
         return args ->{
@@ -30,10 +29,9 @@ public class ClarityZipApplication {
             Set<Role> roles = new HashSet<>();
             roles.add(adminRole);
 
-            ApplicationUser admin = new ApplicationUser(1, "admin", passwordEncode.encode("password"), roles);
+            User admin = new User(1, "admin", passwordEncode.encode("password"), roles);
 
             userRepository.save(admin);
         };
     }
-
 }
