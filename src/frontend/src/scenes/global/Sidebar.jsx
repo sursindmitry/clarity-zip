@@ -51,6 +51,21 @@ const Sidebar = () => {
                 "& .pro-sidebar-inner": {
                     background: `${colors.primary[400]} !important`
                 },
+
+                "& .pro-sidebar-layout": {
+                    "&::-webkit-scrollbar-thumb": {
+                        background: `${colors.grey[100]}`,
+                        overflowY: "auto",
+                        borderRadius: "3px"
+
+                    },
+                    "&::-webkit-scrollbar": {
+                        width: "6px"
+                    },
+                    "&::-webkit-scrollbar-track": {
+                        background: colors.grey[900]
+                    },
+                },
                 "& .pro-icon-wrapper": {
                     backgroundColor: "transparent !important"
                 },
@@ -160,27 +175,27 @@ const Sidebar = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
-                        {/*<Item*/}
-                        {/*    title="Manage Team"*/}
-                        {/*    to="/team"*/}
-                        {/*    icon={<PeopleOutlinedIcon/>}*/}
-                        {/*    selected={selected}*/}
-                        {/*    setSelected={setSelected}*/}
-                        {/*/>*/}
-                        {/*<Item*/}
-                        {/*    title="Contacts Information"*/}
-                        {/*    to="/contacts"*/}
-                        {/*    icon={<ContactsOutlinedIcon/>}*/}
-                        {/*    selected={selected}*/}
-                        {/*    setSelected={setSelected}*/}
-                        {/*/>*/}
-                        {/*<Item*/}
-                        {/*    title="Invoices Balances"*/}
-                        {/*    to="/invoices"*/}
-                        {/*    icon={<ReceiptOutlinedIcon/>}*/}
-                        {/*    selected={selected}*/}
-                        {/*    setSelected={setSelected}*/}
-                        {/*/>*/}
+                        <Item
+                            title="Manage Team"
+                            to="/team"
+                            icon={<PeopleOutlinedIcon/>}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
+                            title="Contacts Information"
+                            to="/contacts"
+                            icon={<ContactsOutlinedIcon/>}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
+                        <Item
+                            title="Invoices Balances"
+                            to="/invoices"
+                            icon={<ReceiptOutlinedIcon/>}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
 
                         <Typography
                             variant="h6"
@@ -247,7 +262,6 @@ const Sidebar = () => {
                             setSelected={setSelected}
                         />
                     </Box>
-
                 </Menu>
             </ProSidebar>
         </Box>
