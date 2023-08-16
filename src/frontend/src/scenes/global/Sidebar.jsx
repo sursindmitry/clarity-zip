@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ProSidebar, Menu, MenuItem} from "react-pro-sidebar";
 import {tokens} from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -45,6 +45,14 @@ const Sidebar = () => {
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
+    const [tokenExists, setTokenExists] = useState(false);
+
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        setTokenExists(!!storedToken);
+    }, []);
+
     return (
         <Box
             sx={{
@@ -106,7 +114,7 @@ const Sidebar = () => {
                     </MenuItem>
 
                     {/* USER */}
-                    {!isCollapsed && (
+                    {(!isCollapsed && !tokenExists) && (
                         <Box mb="25px">
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <img
@@ -117,18 +125,46 @@ const Sidebar = () => {
                                     style={{cursor: "pointer", borderRadius: "50%"}}
                                 />
                             </Box>
-
                             <Box textAlign="center">
                                 <Typography variant="h2" color={colors.grey[100]} fontWeight="bold"
                                             sx={{margin: "10px 0 0 0"}}>Вы не вошли</Typography>
                                 <Typography
-                                    variant="h5" 
-                                    style={{cursor:"pointer"}} 
+                                    variant="h5"
+                                    style={{cursor: "pointer"}}
                                     color={colors.greenAccent[500]}
                                 >
                                     <Item
                                         title="Войти"
                                         to="/login"
+                                        selected={selected}
+                                        setSelected={setSelected}
+                                    />
+                                </Typography>
+                            </Box>
+                        </Box>
+                    )}
+                    {(!isCollapsed && tokenExists) && (
+                        <Box mb="25px">
+                            <Box display="flex" justifyContent="center" alignItems="center">
+                                <img
+                                    alt="profile-user"
+                                    width="100px"
+                                    height="100px"
+                                    src={`../../assets/avatar.png`}
+                                    style={{cursor: "pointer", borderRadius: "50%"}}
+                                />
+                            </Box>
+                            <Box textAlign="center">
+                                <Typography variant="h2" color={colors.grey[100]} fontWeight="bold"
+                                            sx={{margin: "10px 0 0 0"}}>Вы вошли</Typography>
+                                <Typography
+                                    variant="h5"
+                                    style={{cursor: "pointer"}}
+                                    color={colors.greenAccent[500]}
+                                >
+                                    <Item
+                                        title="Профиль"
+                                        to="/profile"
                                         selected={selected}
                                         setSelected={setSelected}
                                     />

@@ -15,9 +15,12 @@ import Calendar from "./scenes/calendar"
 import {Routes, Route} from "react-router-dom";
 import Photo from "./scenes/compressed/photo"
 import Login from "./scenes/login";
+import Register from "./scenes/register";
+import Profile from "./scenes/profile";
 
 function App() {
     const [theme, colorMode] = useMode();
+
 
     return (<ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
@@ -39,6 +42,8 @@ function App() {
                             <Route path="/geography" element={<Geography/>}/>
                             <Route path="/calendar" element={<Calendar/>}/>
                             <Route path="/login" element={<Login/>}/>
+                            <Route path="/register" element={<Register/>}/>
+                            <Route path="/profile" element={<Profile />}/>
                         </Routes>
                     </main>
                 </div>

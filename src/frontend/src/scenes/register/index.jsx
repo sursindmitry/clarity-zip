@@ -1,17 +1,13 @@
-import React from 'react';
-import {Typography, TextField, Button, Box, useTheme} from '@mui/material';
-import {ErrorMessage, Form, Formik} from 'formik';
-import {styled} from '@mui/material/styles';
+import {Box, Button, TextField, Typography, useTheme} from "@mui/material";
+import {ErrorMessage, Form, Formik} from "formik";
+import {Link} from "react-router-dom";
+import React from "react";
 import {tokens} from "../../theme";
-import {Link, useNavigate} from "react-router-dom";
-import axios from "axios";
+import {styled} from "@mui/material/styles";
 
-const Login = () => {
+const Register = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const navigate = useNavigate();
-
-
 
     const CustomTextField = styled(TextField)(({theme}) => ({
         '& label.Mui-focused': {
@@ -32,27 +28,10 @@ const Login = () => {
         password: '',
     };
 
-    const handleSubmit = async (values, actions) => {
-
-        try {
-            const response = await axios.post('http://localhost:8080/auth/login', {
-                username: values.username,
-                password: values.password,
-            });
-
-            if (response.data.user === null) {
-                console.log("Фигню пишешь")
-            }
-            else {
-                localStorage.setItem('token',response.data.gwt);
-                navigate("/profile");
-            }
-
-            actions.setSubmitting(false);
-        } catch (error) {
-            console.error('Error:', error);
-            actions.setSubmitting(false);
-        }
+    const handleSubmit = (values, actions) => {
+        // Здесь можно добавить логику для проверки аутентификации
+        console.log('Submitted values:', values);
+        actions.setSubmitting(false);
     };
 
     return (
@@ -64,11 +43,11 @@ const Login = () => {
             height="90vh"
         >
             <Typography variant="h2" align="center">
-                Вход
+                Регистрация
             </Typography>
             <Box display="flex" justifyContent="center" alignItems="center">
                 <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                    {({values, handleChange, handleBlur, isSubmitting}) => (
+                    {({isSubmitting}) => (
                         <Form>
                             <CustomTextField
                                 fullWidth
@@ -76,9 +55,6 @@ const Login = () => {
                                 label="Имя пользователя"
                                 name="username"
                                 margin="normal"
-                                value={values.username}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
                             />
                             <ErrorMessage name="username" component="div"/>
 
@@ -89,9 +65,16 @@ const Login = () => {
                                 name="password"
                                 type="password"
                                 margin="normal"
-                                value={values.password}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                            />
+                            <ErrorMessage name="password" component="div"/>
+
+                            <CustomTextField
+                                fullWidth
+                                variant="outlined"
+                                label="Пароль ещё раз"
+                                name="password"
+                                type="password"
+                                margin="normal"
                             />
                             <ErrorMessage name="password" component="div"/>
 
@@ -103,28 +86,13 @@ const Login = () => {
                                 disabled={isSubmitting}
                                 style={{marginTop: '1rem'}}
                             >
-                                Войти
+                                Зарегистрироваться
                             </Button>
                         </Form>
                     )}
                 </Formik>
-
-            </Box>
-            <Box marginTop="20px" align="center">
-                <Typography>Нет аккаунта?</Typography>
-
-                <Link to="/register" style={{textDecoration: "none"}}>
-                    <Typography
-                        variant="h5"
-                        style={{cursor: "pointer"}}
-                        color={colors.greenAccent[500]}
-                    >
-                        Зарегистрироваться
-                    </Typography>
-                </Link>
             </Box>
         </Box>
     );
 };
-
-export default Login;
+export default Register;
