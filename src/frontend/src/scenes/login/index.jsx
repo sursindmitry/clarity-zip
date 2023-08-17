@@ -13,7 +13,7 @@ const Login = () => {
 
 
 
-    const CustomTextField = styled(TextField)(({theme}) => ({
+    const CustomTextField = styled(TextField)(() => ({
         '& label.Mui-focused': {
             color: `${colors.grey[100]}`,
         },
@@ -41,7 +41,7 @@ const Login = () => {
             });
 
             if (response.data.user === null) {
-                console.log("Фигню пишешь")
+                console.log("Уведомление о том, что либо пароль, либо логин неправильный")
             }
             else {
                 localStorage.setItem('token',response.data.gwt);
@@ -66,8 +66,15 @@ const Login = () => {
             <Typography variant="h2" align="center">
                 Вход
             </Typography>
-            <Box display="flex" justifyContent="center" alignItems="center">
-                <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                >
                     {({values, handleChange, handleBlur, isSubmitting}) => (
                         <Form>
                             <CustomTextField
