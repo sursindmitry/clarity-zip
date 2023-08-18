@@ -5,11 +5,29 @@ import {styled} from '@mui/material/styles';
 import {tokens} from "../../theme";
 import axios from "axios";
 import * as yup from "yup";
+import {useNavigate} from "react-router-dom";
 
 const checkoutSchema = yup.object().shape({
-    username: yup.string().required("Обязательно"),
-    password: yup.string().required("Обязательно"),
-    confirmPassword: yup.string().required("Обязательно"),
+    username: yup
+        .string().required("Обязательно")
+        .min(3, "Логин должен содержать минимум 3 символа")
+        .matches(/^\w+$/, "Логин не должен содержать специальные символы")
+        .notOneOf(['admin', 'superuser'], "Этот логин зарезервирован")
+        .min(3, "Логин должен содержать не менее 3 символов")
+        .max(20, "Логин не должен превышать 20 символов")
+        .test("no-spaces", "Логин не должен содержать пробелы", (value) => {
+            return value === undefined || value.trim() === value;
+        }),
+    password: yup
+        .string().required("Обязательно")
+        .oneOf([yup.ref('confirmPassword'),null],"Пароли должны совпадать")
+        .min(8, "Пароль должен содержать не меннее 8 символов")
+        .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]*$/, "Пароль должен содержать буквы и цифры"),
+    confirmPassword: yup
+        .string().required("Обязательно")
+        .oneOf([yup.ref('password'),null],"Пароли должны совпадать")
+        .min(8, "Пароль должен содержать не меннее 8 символов")
+        .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]*$/, "Пароль должен содержать буквы и цифры")
 });
 
 const initialValues = {
@@ -20,7 +38,7 @@ const initialValues = {
 const Register = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-
+    const navigate = useNavigate();
 
     const CustomTextField = styled(TextField)(() => ({
         '& label.Mui-focused': {
@@ -45,8 +63,13 @@ const Register = () => {
                 password: values.password
             });
 
-            console.log("Values: "+values)
-
+            if (response === null) {
+                console.log("Уведомление о том, что то пошло не так")
+            }
+            else {
+                console.log("Уведомление о том, что пользователь создан")
+                navigate("/login");
+            }
 
             actions.setSubmitting(false);
         } catch (error) {
@@ -82,7 +105,7 @@ const Register = () => {
                                     fullWidth
                                     variant="outlined"
                                     type="text"
-                                    label="Имя пользователя"
+                                    label="Логин"
                                     name="username"
                                     margin="normal"
                                     value={values.username}
@@ -104,7 +127,6 @@ const Register = () => {
                                     error={!!touched.password && !!errors.password}
                                     helperText={touched.password && errors.password}
                                 />
-
                                 <CustomTextField
                                     fullWidth
                                     variant="outlined"
