@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import {ProSidebar, Menu, MenuItem} from "react-pro-sidebar";
 import {tokens} from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -19,6 +19,7 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import {Box, IconButton, Typography, useTheme} from "@mui/material";
 import 'react-pro-sidebar/dist/css/styles.css';
 import {Link} from "react-router-dom";
+import {useAuth} from "../../components/AuthProvider";
 
 
 const Item = ({title, to, icon, selected, setSelected}) => {
@@ -45,13 +46,7 @@ const Sidebar = () => {
     const colors = tokens(theme.palette.mode);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
-    const [tokenExists, setTokenExists] = useState(false);
-
-
-    useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        setTokenExists(!!storedToken);
-    }, []);
+    const {tokenExists} = useAuth();
 
     return (
         <Box
@@ -90,7 +85,6 @@ const Sidebar = () => {
             }}>
             <ProSidebar collapsed={isCollapsed} collapsedWidth="100px">
                 <Menu iconShape="squre">
-                    {/* LOGO AND MENU ICON*/}
                     <MenuItem onClick={() => setIsCollapsed(!isCollapsed)}
                               icon={isCollapsed ? <MenuOutlinedIcon/> : undefined}
                               style={{
@@ -113,7 +107,6 @@ const Sidebar = () => {
                         )}
                     </MenuItem>
 
-                    {/* USER */}
                     {(!isCollapsed && !tokenExists) && (
                         <Box mb="25px">
                             <Box display="flex" justifyContent="center" alignItems="center">
@@ -143,7 +136,7 @@ const Sidebar = () => {
                             </Box>
                         </Box>
                     )}
-                    {(!isCollapsed && tokenExists) && (
+                    {(!isCollapsed && tokenExists  ) && (
                         <Box mb="25px">
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <img
@@ -173,7 +166,6 @@ const Sidebar = () => {
                         </Box>
                     )}
 
-                    {/* MENU ITEMS*/}
                     <Box paddingLeft={isCollapsed ? undefined : "10%"}>
                         <Item
                             title="Главная"

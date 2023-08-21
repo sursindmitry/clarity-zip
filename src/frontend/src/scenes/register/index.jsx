@@ -6,6 +6,7 @@ import {tokens} from "../../theme";
 import axios from "axios";
 import * as yup from "yup";
 import {useNavigate} from "react-router-dom";
+import {NotificationManager} from "react-notifications";
 
 const checkoutSchema = yup.object().shape({
     username: yup
@@ -56,7 +57,6 @@ const Register = () => {
 
 
     const handleSubmit = async (values, actions) => {
-
         try {
             const response = await axios.post('http://localhost:8080/auth/register', {
                 username: values.username,
@@ -64,16 +64,16 @@ const Register = () => {
             });
 
             if (response === null) {
-                console.log("Уведомление о том, что то пошло не так")
             }
             else {
-                console.log("Уведомление о том, что пользователь создан")
+                NotificationManager.success('Войдите в аккаунт', 'Вы успешно зарегистрировались!');
                 navigate("/login");
             }
 
             actions.setSubmitting(false);
         } catch (error) {
             console.error('Error:', error);
+            NotificationManager.error('Произошла ошибка при регистрации', 'Ошибка');
             actions.setSubmitting(false);
         }
     };

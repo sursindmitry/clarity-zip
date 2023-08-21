@@ -1,16 +1,15 @@
 import {Box} from "@mui/material";
 import Header from "../../components/Header";
-import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../components/AuthProvider";
 
 const Profile = () => {
-    const navigate = useNavigate();
-    const isAuthenticated = !!localStorage.getItem("token");
+    const {tokenExists,logout} = useAuth();
 
-    if (!isAuthenticated) {
+    if (!tokenExists) {
         return <div>Доступ запрещён</div>
     }
     const clickbuttn = () => {
-        localStorage.removeItem('token')
+        logout(false);
         console.log("delete")
     }
     return (

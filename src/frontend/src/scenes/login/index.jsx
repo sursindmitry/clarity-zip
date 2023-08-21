@@ -5,13 +5,14 @@ import {styled} from '@mui/material/styles';
 import {tokens} from "../../theme";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+import {NotificationManager} from "react-notifications";
+import {useAuth} from "../../components/AuthProvider";
 
 const Login = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const navigate = useNavigate();
-
-
+    const { login } = useAuth();
 
     const CustomTextField = styled(TextField)(() => ({
         '& label.Mui-focused': {
@@ -35,16 +36,16 @@ const Login = () => {
     const handleSubmit = async (values, actions) => {
 
         try {
-            const response = await axios.post('http://localhost:8080/auth/login', {
+            const response = await axios.post('http://192.168.10.208:8080/auth/login', {
                 username: values.username,
                 password: values.password,
             });
 
             if (response.data.user === null) {
-                console.log("Уведомление о том, что либо пароль, либо логин неправильный")
+                NotificationManager.error("Логин или пароль неправильны", "Ошибка");
             }
             else {
-                localStorage.setItem('token',response.data.gwt);
+                login(response.data.gewt);
                 navigate("/profile");
             }
 
