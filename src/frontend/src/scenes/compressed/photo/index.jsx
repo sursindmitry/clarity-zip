@@ -1,129 +1,106 @@
-import {Box, Button, Typography, useTheme} from "@mui/material";
+import {Box, Button, Paper, Typography, useTheme} from "@mui/material";
 import {tokens} from "../../../theme";
 import Header from "../../../components/Header";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import axios from "axios";
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const Photo = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const inputRef = useRef(null);
-    const [drag, setDrag] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [uploadedImage, setUploadedImage] = useState(null);
 
-    const handleButtonClick = () => {
-        const files = inputRef.current.click();
-        uploadFilesToServer(files);
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
     };
 
-    function dragStartHandler(e) {
-        e.preventDefault()
-        setDrag(true);
-    }
+    const handleDrop = (event) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        setSelectedFile(file);
+    };
 
-    function dragLeaveHandler(e) {
-        e.preventDefault()
-        setDrag(false);
-    }
+    const handleDragOver = (event) => {
+        event.preventDefault();
+    };
 
-    function onDropHandler(e) {
-        e.preventDefault()
-        let files = [...e.dataTransfer.files]
-        uploadFilesToServer(files)
-        setDrag(false)
-    }
-
-    const uploadFilesToServer = async (files)=>{
-        try {
+    const handleUpload = async () => {
+        if (selectedFile) {
             const formData = new FormData();
-            for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
+            formData.append('image', selectedFile);
+
+            try {
+                const response = await axios.post('http://localhost:8080/compressed/photo', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                setUploadedImage(response.data);
+
+            } catch (error) {
+                console.error('Error uploading image:', error);
             }
-
-            await axios.post('http://localhost:8080/api/v1/compressed/photo', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            console.log('Файлы успешно отправлены на сервер.');
-        } catch (error) {
-            console.error('Ошибка при отправке файлов на сервер:', error);
         }
     };
-
+    useEffect(() => {
+        console.log(`http://localhost:8080${uploadedImage}`)
+    }, [uploadedImage]);
     return (
         <Box m="20px">
             <Header title="Сжать фото"/>
-            {drag
-                ? <Box
-                    sx={{
-                        width: "auto",
-                        height: "80vh",
-                        border: `5px dashed ${colors.grey[500]}`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
-                    onDragStart={e => dragStartHandler(e)}
-                    onDragLeave={e => dragLeaveHandler(e)}
-                    onDragOver={e => dragStartHandler(e)}
-                    onDrop={e => onDropHandler(e)}
-                >
-                    <Typography
-                        variant="h2"
-                        color={colors.grey[100]}
-                        fontWeight="bold"
-                        onDragStart={e => e.preventDefault()}
-                        onDragLeave={e => e.preventDefault()}
-                        onDragOver={e => e.preventDefault()}
-                    >Отпустите файлы для загрузки</Typography>
-                </Box>
-                : <Box
-                    sx={{
-                        width: "auto",
-                        height: "80vh",
-                        border: `5px dashed ${colors.grey[500]}`,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
-                    onDragStart={e => dragStartHandler(e)}
-                    onDragLeave={e => dragLeaveHandler(e)}
-                    onDragOver={e => dragStartHandler(e)}
-                >
-                    <Typography
-                        variant="h2"
-                        color={colors.grey[100]}
-                        fontWeight="bold"
-                        onDragStart={e => e.preventDefault()}
-                        onDragLeave={e => e.preventDefault()}
-                        onDragOver={e => e.preventDefault()}
-                    >Перетащите файлы для загрузки
-                    </Typography>
+            <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
 
-                    <Typography
-                        variant="h2"
-                        color={colors.grey[100]}
-                        fontWeight="inherit"
-                        onDragStart={e => e.preventDefault()}
-                        onDragLeave={e => e.preventDefault()}
-                        onDragOver={e => e.preventDefault()}
-                    >или
-                    </Typography>
-                    <Box my={2}>
-                        <input
-                            type="file"
-                            style={{display: "none"}}
-                            ref={inputRef}
-                        />
-                        <Button
-                            style={{backgroundColor: colors.greenAccent[500]}}
-                            onClick={handleButtonClick}
-                        >Выберите файл</Button>
+            >
+                <Paper
+                    elevation={3}
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    style={{ padding: '20px', textAlign: 'center', cursor: 'pointer' }}
+                >
+                    {selectedFile ? (
+                        <div>
+                            <img
+                                src={URL.createObjectURL(selectedFile)}
+                                alt="Selected"
+                                style={{ maxWidth: '100%', marginBottom: '10px' }}
+                            />
+                            <Typography variant="subtitle1">{selectedFile.name}</Typography>
+                            <Button variant="contained" onClick={handleUpload}>
+                                Сжать
+                            </Button>
+                        </div>
+                    ) : (
+                        <div>
+                            <CloudUploadIcon fontSize="large" />
+                            <Typography variant="subtitle1">Перетащите файл для загрузки или</Typography>
+                            <input
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                id="file-input"
+                                type="file"
+                                onChange={handleFileChange}
+                            />
+                            <label htmlFor="file-input">
+                                <Button variant="contained" component="span">
+                                    Выберите файл
+                                </Button>
+                            </label>
+                        </div>
+                    )}
+                </Paper>
+                {uploadedImage && (
+                    <Box marginTop="20px">
+                        <Typography variant="subtitle1">Изображение на сервере:</Typography>
+                        <img src={`http://localhost:8080${uploadedImage}`} alt="Compressed" style={{ maxWidth: '100%', marginTop: '10px' }} />
                     </Box>
-                </Box>}
+                )}
+            </Box>
         </Box>
-    )
-}
+
+    );
+};
 export default Photo;
