@@ -4,6 +4,7 @@ import Header from "../../../components/Header";
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {NotificationManager} from "react-notifications";
 
 const Photo = () => {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -28,7 +29,6 @@ const Photo = () => {
         if (selectedFile) {
             const formData = new FormData();
             formData.append('image', selectedFile);
-
             try {
                 const response = await axios.post('http://localhost:8080/compressed/photo', formData, {
                     headers: {
@@ -36,15 +36,17 @@ const Photo = () => {
                     },
                 });
                 setUploadedImage(response.data);
+                setSelectedFile(null);
 
             } catch (error) {
-                console.error('Error uploading image:', error);
+                if (error.response.status === 400) {
+                    NotificationManager.error("Файл не является фотографией", "Ошибка");
+                    setSelectedFile(null)
+                }
             }
         }
     };
-    useEffect(() => {
-        console.log(`http://localhost:8080${uploadedImage}`)
-    }, [uploadedImage]);
+
     return (
         <Box m="20px">
             <Header title="Сжать фото"/>
@@ -94,7 +96,7 @@ const Photo = () => {
                 </Paper>
                 {uploadedImage && (
                     <Box marginTop="20px">
-                        <Typography variant="subtitle1">Изображение на сервере:</Typography>
+                        <Typography variant="subtitle1">Ваше сжатое изображение:</Typography>
                         <img src={`http://localhost:8080${uploadedImage}`} alt="Compressed" style={{ maxWidth: '100%', marginTop: '10px' }} />
                     </Box>
                 )}
