@@ -1,4 +1,4 @@
-import { useState} from "react";
+import {useEffect, useState} from "react";
 import {ProSidebar, Menu, MenuItem} from "react-pro-sidebar";
 import {tokens} from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -47,7 +47,16 @@ const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
     const {tokenExists} = useAuth();
-
+    useEffect(() => {
+        const contentElement = document.querySelector(".content");
+        if (contentElement) {
+            if (isCollapsed) {
+                contentElement.style.overflow = "hidden";
+            } else {
+                contentElement.style.overflow = "auto";
+            }
+        }
+    }, [isCollapsed]);
     return (
         <Box
             sx={{

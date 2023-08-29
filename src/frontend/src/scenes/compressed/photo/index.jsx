@@ -1,12 +1,15 @@
 import {Box, Button, Paper, Typography, useTheme} from "@mui/material";
 import {tokens} from "../../../theme";
 import Header from "../../../components/Header";
-import {useEffect, useRef, useState} from "react";
+import {useState} from "react";
 import axios from "axios";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {NotificationManager} from "react-notifications";
 
 const Photo = () => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
 
